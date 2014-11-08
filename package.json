@@ -1,0 +1,34 @@
+{
+  "name": "gulp-vows",
+  "version": "0.1.0",
+  "description": "Gulp plugin for vows.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "vows test/json/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/m0x72/gulp-vows.git"
+  },
+  "keywords": [
+    "gulpplugin"
+  ],
+  "author": "m0x72",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/m0x72/gulp-vows/issues"
+  },
+  "homepage": "https://github.com/m0x72/gulp-vows",
+  "dependencies": {
+    "gulp-util": "^3.0.1",
+    "lodash": "^2.4.1",
+    "through2": "^0.6.3",
+    "vows": "^0.8.0"
+  },
+  "devDependencies": {
+    "api-easy": "^0.3.8",
+    "gulp": "^3.8.10",
+    "gulp-shell": "^0.2.10",
+    "json-matchers": "^0.1.1"
+  }
+}

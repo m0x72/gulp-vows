@@ -1,0 +1,53 @@
+  var APIeasy = require('api-easy'),
+  assert = require('assert'),
+  _ = require('lodash'),
+  matchers = require('json-matchers');
+
+  var suite = APIeasy.describe('your/awesome/api - json-vows.spec.js');
+
+  suite.discuss('When using your awesome API')
+    .use('echo.jsontest.com/', 80)
+    .setHeader('Content-Type', 'application/json')
+    .discuss('and your awesome resource')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .expect('my expect test', function(err, res, body) {
+      matchers.expectJSONTypes(JSON.parse(body), {key: String, key2: String})
+    })
+    .undiscuss().unpath()
+    .discuss('resource 2')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .undiscuss().unpath()
+    .discuss('resource 3')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .undiscuss().unpath()
+    .discuss('resource 4')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .undiscuss().unpath()
+    .discuss('resource 5')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .undiscuss().unpath()
+    .next()
+    .discuss('When using your awesome API2')
+    .use('echo.jsontest.com/', 80)
+    .setHeader('Content-Type', 'application/json')
+    .discuss('resource 6')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .undiscuss().unpath()
+    .discuss('resource 7')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .undiscuss().unpath()
+    .discuss('resource 8')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .undiscuss().unpath()
+    .discuss('resource 9')
+    .get('key/value/key2/value2')
+    .expect(200, { key: 'value', key2: 'value2' })
+    .export(module);
