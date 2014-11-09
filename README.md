@@ -28,12 +28,27 @@ gulp-vows takes an options object with the following options
 @todo: to be implemented (launch suites in parallel, at the cost of reporting results)
 
 ## Example
+Gulp task
 ```js
 gulp.task('task', function(){
   return gulp.src('test/**/*.spec.js')
       .pipe(vows({reporter: 'spec'}));
 });
 ```
+Test suite (export test suite)
+```js
+var vows = require('vows'),
+  assert = require('assert');
+vows.describe('A good suite').addBatch({
+  'when all contexts': {
+    topic: function() {return true;},
+    'are valid': {
+      assert.equal(topic, true);
+    }
+  }
+}).export(module);
+```
+
 ## Todos
 Proper testing, documentation, aforementioned features
 
