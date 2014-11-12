@@ -1,23 +1,30 @@
-// through2 is a thin wrapper around node transform streams
+// gulp-vows
+
+// imports
 var through = require('through2');
 var _ = require('lodash');
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
+var path = require('path');
+var _Module = require('module'); // module prototype
 
-// vow vars
-// (default) arguments
+// constants
+const PLUGIN_NAME = 'gulp-vows';
+
+// (default) plugin arguments
 var args = {
   reporter: require('vows/lib/vows/reporters/dot-matrix'),
   verbose: false,
   shuffle: false
 };
 
-// consts
-const PLUGIN_NAME = 'gulp-vows';
 
+// helper
 function requireFromString(src, filename) {
-  var m = new module.constructor();
-  m.paths = module.paths;
+  var m = new _Module(filename, this);
+  m.filename = filename;
+  m.paths = _Module._nodeModulePaths(path.dirname(filename));
+  // m.paths = module.paths;
   m._compile(src, filename);
   return m.exports;
 }
@@ -94,7 +101,7 @@ function getReporterWrapper() {
   };
 }
 
-// main
+// main plugin
 function gulpVows(gOptions) {
 
   // vow suite collection
@@ -126,7 +133,7 @@ function gulpVows(gOptions) {
 
     if (file.isBuffer()) {
         // Load spec
-        var suitesFromFile = requireFromString(String(file.contents), file.relative);
+        var suitesFromFile = requireFromString(String(file.contents), file.path/*file.relative*/);
 
         // add suite to collection
         suites = suites.concat(Object.keys(suitesFromFile).map(function(suiteName){
@@ -143,7 +150,25 @@ function gulpVows(gOptions) {
   }, function(cb) {
     // launch collection of suites
 
-    // run test suites synchronously, eventually call reportResults to end stream
+    var that = this;
+
+    // suite options object
+    var options = {
+      reporter: getReporterWrapper(),
+      verbose: args.verbose // not sure if used
+    };
+
+    // prepare reporter
+    options.reporter.reset();
+
+    // suffle if shuffle arg set
+    if (args.shuffle)
+      suites = _.shuffle(suites);
+
+    // run suites!
+    run(suites, reportResults);
+
+    // runs test suites synchronously, eventually calls reportResults to end stream
     // @TODO supply arg to launch all suites at once at the cost of report prettiness
     function run(suites, callback) {
         var suite = suites.shift();
@@ -158,9 +183,8 @@ function gulpVows(gOptions) {
             callback(results);
         }
     }
-    var that = this;
 
-    // report results and call flush callback (called by runner)
+    // reports results and calls flush callback (called by runner)
     function reportResults(results){
       var status = results.errored ? 2 : (results.broken ? 1 : 0);
 
@@ -186,22 +210,6 @@ function gulpVows(gOptions) {
 
       return cb();
     }
-
-    // suite options object
-    var options = {
-      reporter: getReporterWrapper(),
-      verbose: args.verbose // not sure if used
-    };
-
-    // prepare reporter
-    options.reporter.reset();
-
-    // suffle if shuffle arg set
-    if (args.shuffle)
-      suites = _.shuffle(suites);
-
-    // run suites!
-    run(suites, reportResults);
 
   });
 
