@@ -133,7 +133,11 @@ function gulpVows(gOptions) {
 
     if (file.isBuffer()) {
         // Load spec
-        var suitesFromFile = requireFromString(String(file.contents), file.path/*file.relative*/);
+        try {
+          var suitesFromFile = requireFromString(String(file.contents), file.path/*file.relative*/);
+        } catch(e) {
+          return cb(new gutil.PluginError('gulp-vow', e));
+        }
 
         // add suite to collection
         suites = suites.concat(Object.keys(suitesFromFile).map(function(suiteName){
