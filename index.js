@@ -15,6 +15,7 @@ const PLUGIN_NAME = 'gulp-vows';
 var args = {
   reporter: require('vows/lib/vows/reporters/dot-matrix'),
   verbose: false,
+  errorOnFailedTests: false,
   shuffle: false
 };
 
@@ -64,6 +65,9 @@ function parseArguments(_args) {
 
   if (typeof _args.shuffle === "boolean")
     args.shuffle = _args.shuffle;
+
+  if (typeof _args.errorOnFailedTests === "boolean")
+    args.errorOnFailedTests = _args.errorOnFailedTests;
 
   // // nocolor
   // if (typeof _args.nocolor === "boolean")
@@ -212,7 +216,12 @@ function gulpVows(gOptions) {
 
       that.push();
 
-      return cb();
+      if(status > 0 && args.errorOnFailedTests) {
+          return cb(new gutil.PluginError('gulp-vow', 'Tests failed'));
+      }
+      else {
+          return cb();
+      }
     }
 
   });

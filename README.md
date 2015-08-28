@@ -21,6 +21,9 @@ gulp-vows takes an options object with the following options
 ### options.verbose
 *boolean*: Verbose output. (unstable)
 
+### options.errorOnFailedTests
+*boolean*: Throw an error if any tests fail
+
 ### options.coverage
 @todo: to be implemented
 
